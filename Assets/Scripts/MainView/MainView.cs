@@ -5,18 +5,23 @@ using Kasug;
 public class MainView : UIBase
 {
 
-    void Start()
+    private MainView_V view;
+    protected override void Start()
     {
+        base.Start();
+        view = GetComponent<MainView_V>();
+
+        AddUiButton(view.image1.name, OnImage1Click);
         
     }
 
 
-    public  void OnImage1Click()
+    private void OnImage1Click()
     {
-
+        Debug.Log("Image1 Click");
     }
 
-    public  void OnImage2Click()
+    private void OnImage2Click()
     {
 
     }

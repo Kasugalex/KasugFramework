@@ -81,7 +81,13 @@ namespace Kasug
                 string clickImage = Intersection.PointInShape(screenPos, uiBase);
                 if (!string.IsNullOrEmpty(clickImage))
                 {
-
+                    foreach (var key in uiBase.UIButtons.Keys)
+                    {
+                        if (key.Equals(clickImage))
+                        {
+                            uiBase.UIButtons[key]();
+                        }
+                    }
                     break;
                 }
             }

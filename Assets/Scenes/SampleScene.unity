@@ -191,7 +191,6 @@ GameObject:
   m_Component:
   - component: {fileID: 391214375}
   - component: {fileID: 391214376}
-  - component: {fileID: 391214377}
   m_Layer: 0
   m_Name: GameRoot
   m_TagString: Untagged
@@ -225,20 +224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe3653410e3d4234a90640a81ea809d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &391214377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 391214374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b1f99cf4fc50d34d9eada8f9fb8e2e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  screenPos: {x: 0, y: 0}
-  quadrant: 0
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,11 +354,11 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96

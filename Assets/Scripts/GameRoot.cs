@@ -9,7 +9,18 @@ namespace Kasug
         void Start()
         {
 
+            gameObject.AddComponent<TouchBehaviour>();
+
+
             
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                UIManager.OpenUI(UIType.MainView);
+            }
         }
     }
 

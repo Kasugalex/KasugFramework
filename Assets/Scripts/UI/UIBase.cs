@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Reflection;
+using System;
+
 namespace Kasug
 {
     [System.Serializable]
@@ -31,13 +34,12 @@ namespace Kasug
             }
         }
 
+
+        public Dictionary<string, TouchClickHandler> UIButtons { private set; get; } = new Dictionary<string, TouchClickHandler>();
+        
         protected virtual void Awake()
         {
             UIManager.allUIList.Add(this);
-            foreach (var item in UIManager.allUIList)
-            {
-                print(item.name);
-            }
             Image[] childrenImages = GetComponentsInChildren<Image>(true);
             foreach (var img in childrenImages)
             {
@@ -61,7 +63,6 @@ namespace Kasug
                 bound.points.Add(upperLeft);
                 bound.points.Add(upperRight);
                 bound.points.Add(bottomRight);
-
                 //Transform canvas = GameObject.Find("Canvas").transform;
                 //for (int i = 0; i < bound.points.Count; i++)
                 //{
@@ -75,6 +76,25 @@ namespace Kasug
                 //}
                 allBounds.Add(bound);
             }
+        }
+
+        protected virtual void Start()
+        {
+            string className = uiType.ToString() + "_V";
+            Type type = Type.GetType(className);
+
+            if(type == null)
+            {
+                Debug.LogError("没有找到" + className + "对应类");
+                return;
+            }
+
+            gameObject.AddComponent(type);
+        }
+
+        protected void AddUiButton(string buttonName,TouchClickHandler clickEvent)
+        {
+            UIButtons.Add(buttonName, clickEvent);
         }
 
     }

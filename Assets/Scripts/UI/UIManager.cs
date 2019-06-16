@@ -30,16 +30,29 @@ namespace Kasug
         public  static List<UIBase> thirdQuadrantUI  = new List<UIBase>();
         public  static List<UIBase> fourthQuadrantUI = new List<UIBase>();
 
-        public static void OpenUI(UIType type)
+        private static Transform canvas;
+        public static GameObject OpenUI(UIType type)
         {
             foreach (var ui in allUIList)
             {
                 if(ui.uiType == type)
                 {
                     Debug.LogError("Can not open the same UI");
-                    return;
+                    return null;
                 }
             }
+            if (canvas == null) canvas = GameObject.Find("Canvas").transform;
+            GameObject uiPrefab = LoadUI(type);
+            if (uiPrefab == null)
+            {
+                Debug.LogError("找不到UIPrefab");
+                return null;
+            }
+            GameObject uiObj = Object.Instantiate(uiPrefab, canvas);
+            UIBase uIBase = uiObj.GetComponent<UIBase>();
+            uIBase.uiType = type;
+            uIBase.Depth = ++uiDepth;
+            return uiObj;
         }
 
         public static void CloseUI(UIType type)
@@ -54,6 +67,15 @@ namespace Kasug
             }
 
             Debug.LogError("Can not find the UI");
+        }
+
+        private static GameObject LoadUI(UIType type)
+        {
+#if UNITY_EDITOR
+            string path = "Assets/Prefabs/" + type.ToString() + ".prefab";
+            GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;   
+            return prefab;
+#endif
         }
     }
 }

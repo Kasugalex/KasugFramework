@@ -158,7 +158,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5112743914159379665}
   - component: {fileID: 5112743914159379671}
-  - component: {fileID: 5112743914159379668}
   - component: {fileID: 5112743914159379670}
   m_Layer: 5
   m_Name: MainView
@@ -196,24 +195,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5112743914159379664}
   m_CullTransparentMesh: 0
---- !u!114 &5112743914159379668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5112743914159379664}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ed79fc5f997f17429fa21e7fcf6cbcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anchoredPosition: {x: 0, y: 0}
-  Position: {x: 0, y: 0, z: 0}
-  localPosition: {x: 0, y: 0}
-  rectPosition: {x: 0, y: 0}
-  rectXYMinAndMax: {x: 0, y: 0, z: 0, w: 0}
-  rectInfo: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &5112743914159379670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,5 +208,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Depth: 0
-  uiType: {fileID: 0}
+  uiType: 0
   allBounds: []

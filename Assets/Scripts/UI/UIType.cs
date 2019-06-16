@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Kasug
 {
-    public class UIType : MonoBehaviour
+    public enum UIType
     {
-
+        MainView
     }
 }
