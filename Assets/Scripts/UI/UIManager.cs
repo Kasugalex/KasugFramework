@@ -8,7 +8,7 @@ namespace Kasug
         /// <summary>
         /// 每个UI都有自己的深度值（动态赋值），因为后打开的UI肯定层级最高,优先点击
         /// </summary>
-        public  static int uiDepth = int.MinValue;
+        public static int uiDepth = int.MinValue;
         /*private static UIManager instance;
         public  static UIManager Instance
         {
@@ -23,14 +23,21 @@ namespace Kasug
             }
         }
         */
-        public  static List<UIBase> allUIList = new List<UIBase>();
 
-        public  static List<UIBase> firstQuadrantUI  = new List<UIBase>();
-        public  static List<UIBase> secondQuadrantUI = new List<UIBase>();
-        public  static List<UIBase> thirdQuadrantUI  = new List<UIBase>();
-        public  static List<UIBase> fourthQuadrantUI = new List<UIBase>();
+        /// <summary>
+        /// 所有UI
+        /// </summary>
+        public static List<UIBase> allUIList = new List<UIBase>();
 
-        private static Transform canvas;
+        /// <summary>
+        /// 当前最顶层的UI
+        /// </summary>
+        public static UIBase CurrentTopUI;
+
+        public  static Transform Canvas   { private set; get; } = GameObject.Find("Canvas").transform;
+
+        public  static Camera    UICamera { private set; get; } = Canvas.GetComponent<Canvas>().worldCamera;
+
         public static GameObject OpenUI(UIType type)
         {
             foreach (var ui in allUIList)
@@ -41,27 +48,31 @@ namespace Kasug
                     return null;
                 }
             }
-            if (canvas == null) canvas = GameObject.Find("Canvas").transform;
+
             GameObject uiPrefab = LoadUI(type);
             if (uiPrefab == null)
             {
                 Debug.LogError("找不到UIPrefab");
                 return null;
             }
-            GameObject uiObj = Object.Instantiate(uiPrefab, canvas);
+            GameObject uiObj = Object.Instantiate(uiPrefab, Canvas);
             UIBase uIBase = uiObj.GetComponent<UIBase>();
             uIBase.uiType = type;
             uIBase.Depth = ++uiDepth;
+            CurrentTopUI = uIBase;
+            allUIList.Add(uIBase);
             return uiObj;
         }
 
-        public static void CloseUI(UIType type)
+        public static void CloseUI(UIType type, bool hide = false)
         {
             foreach (var ui in allUIList)
             {
                 if (ui.uiType == type)
                 {
-                    
+                    UIBase removeUI = allUIList.Find((t) => t.uiType == type);
+                    allUIList.Remove(removeUI);
+                    Object.Destroy(removeUI.gameObject);
                     return;
                 }
             }

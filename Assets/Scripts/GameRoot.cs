@@ -8,11 +8,7 @@ namespace Kasug
 
         void Start()
         {
-
-            gameObject.AddComponent<TouchBehaviour>();
-
-
-            
+            gameObject.AddComponent<TouchBehaviour>();        
         }
 
         private void Update()

@@ -6,14 +6,11 @@ namespace Kasug
 {
     public delegate void TouchClickHandler();
     public delegate void TouchDragHandler();
+    public delegate void TouchPressHandler();
     public class TouchBehaviour : MonoBehaviour
     {
         public Vector2 screenPos;
         public int quadrant = 0;
-
-        //这些事件应该写在UI上，这里做全局测试
-        private TouchClickHandler clickEvent;
-        private TouchDragHandler dragEvent;
 
         private Vector2 screenMiddlePoint;
         private void Awake()
@@ -21,25 +18,40 @@ namespace Kasug
             screenMiddlePoint = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         }
 
-
+        private TouchClickHandler currentClickEvent;
+        private TouchDragHandler  currentDragEvent;
+        private TouchPressHandler currentPressEvent;
         private Vector2 lastScreenPos;
+        private float pressTime;
+        private float pressTimer;
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 screenPos = Input.mousePosition;
                 DetectedQuandrant();
-                if (clickEvent != null) clickEvent();
+                if (currentClickEvent != null) currentClickEvent();
             }
             else if (Input.GetMouseButton(0))
             {
                 float sqrCurrent = screenPos.x * screenPos.x + screenPos.y * screenPos.y;
                 float sqrLast    = lastScreenPos.x * lastScreenPos.x + lastScreenPos.y * lastScreenPos.y;
+
                 if (Mathf.Abs(sqrCurrent - sqrLast) > 0.1f)
                 {
                     lastScreenPos = screenPos;
 
-                    if(dragEvent != null) dragEvent();
+                    if (currentDragEvent != null) currentDragEvent();
+                }
+                //按住事件
+                else
+                {
+                    pressTimer += Time.deltaTime;
+
+                    if(pressTimer >= pressTime && currentPressEvent!= null)
+                    {
+                        currentPressEvent();
+                    }
                 }
             }
         }
@@ -59,38 +71,54 @@ namespace Kasug
                 quadrant = y >= screenMiddlePoint.y ? 2 : 3;
             }
 
-            List<UIBase> currentDetectedUIList = new List<UIBase>();
+            List<UIBaseBound> currentDetectedUIList = new List<UIBaseBound>();
+            UIBase currentTopUI = UIManager.CurrentTopUI;
             switch (quadrant)
             {
                 case 1:
-                    currentDetectedUIList = UIManager.firstQuadrantUI;
+                    currentDetectedUIList = currentTopUI.firstQuadrantUI;
                     break;
                 case 2:
-                    currentDetectedUIList = UIManager.secondQuadrantUI;
+                    currentDetectedUIList = currentTopUI.secondQuadrantUI;
                     break;
                 case 3:
-                    currentDetectedUIList = UIManager.thirdQuadrantUI;
+                    currentDetectedUIList = currentTopUI.thirdQuadrantUI;
                     break;
                 case 4:
-                    currentDetectedUIList = UIManager.fourthQuadrantUI;
+                    currentDetectedUIList = currentTopUI.fourthQuadrantUI;
                     break;
             }
-            //暂时遍历全局
-            foreach (var uiBase in UIManager.allUIList)
+
+            foreach (var uiBase in currentDetectedUIList)
             {
-                string clickImage = Intersection.PointInShape(screenPos, uiBase);
-                if (!string.IsNullOrEmpty(clickImage))
+                string clickImageName = Intersection.PointInShape(screenPos, currentDetectedUIList);
+                if (!string.IsNullOrEmpty(clickImageName))
                 {
-                    foreach (var key in uiBase.UIButtons.Keys)
+                    if (uiBase.image.name.Equals(clickImageName))
                     {
-                        if (key.Equals(clickImage))
+                        //点击事件
+                        if (currentTopUI.UIClick.ContainsKey(clickImageName))
+                            currentClickEvent = currentTopUI.UIClick[clickImageName];
+                        //拖拽事件
+                        if (currentTopUI.UIDrag.ContainsKey(clickImageName))
+                            currentDragEvent = currentTopUI.UIDrag[clickImageName];
+                        //按住事件
+                        if (currentTopUI.UIPress.ContainsKey(clickImageName))
                         {
-                            uiBase.UIButtons[key]();
+                            pressTime = currentTopUI.UIPressTime[clickImageName];
+                            currentPressEvent = currentTopUI.UIPress[clickImageName];
                         }
                     }
                     break;
                 }
+                else
+                {
+                    currentClickEvent = null;
+                    currentDragEvent = null;
+                    currentPressEvent = null;
+                }
             }
         }
+
     }
 }

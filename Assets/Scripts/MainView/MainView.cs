@@ -12,7 +12,7 @@ public class MainView : UIBase
         view = GetComponent<MainView_V>();
 
         AddUiButton(view.image1.name, OnImage1Click);
-        
+        AddUiButton(view.image2.name, OnImage2Click);
     }
 
 
@@ -23,6 +23,6 @@ public class MainView : UIBase
 
     private void OnImage2Click()
     {
-
+        Debug.Log("Image2 Click");
     }
 }

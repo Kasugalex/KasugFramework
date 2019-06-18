@@ -6,6 +6,7 @@ namespace Kasug
 {
     public enum UIType
     {
-        MainView
+        MainView,
+        BagView
     }
 }

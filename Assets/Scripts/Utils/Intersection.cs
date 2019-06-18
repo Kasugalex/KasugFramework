@@ -6,17 +6,16 @@ namespace Kasug.Utils
 {
     public static class Intersection
     {
-        public static string PointInShape(this Vector2 p,UIBase uIBase)
+        public static string PointInShape(this Vector2 p,List<UIBaseBound> uIBase)
         {
             int nCross = 0;
-            List<UIBaseBound> bound = uIBase.AllBounds;
-            for (int i = 0; i < bound.Count; i++)
+            for (int i = 0; i < uIBase.Count; i++)
             {
-                int nCount = bound[i].points.Count;
+                int nCount = uIBase[i].points.Count;
                 for (int j = 0; j < nCount; j++)
                 {
-                    Vector2 p1 = bound[i].points[j];
-                    Vector2 p2 = bound[i].points[(j + 1) % nCount];
+                    Vector2 p1 = uIBase[i].points[j];
+                    Vector2 p2 = uIBase[i].points[(j + 1) % nCount];
                     // p1p2 与 y=p0.y平行 
                     if (p1.y == p2.y) 
                         continue;
@@ -37,7 +36,7 @@ namespace Kasug.Utils
                 if(nCross % 2 == 1)
                 {
 
-                    return bound[i].image.name;
+                    return uIBase[i].image.name;
                 }
             }
 
