@@ -3,6 +3,8 @@ local SkillRewardScrollComponent    = class("SkillRewardScrollComponent",LoopScr
 function SkillRewardScrollComponent:ctor(row,column,itemData)
     self.super.ctor(self,row,column,itemData)
     self.Position           = {}--{-6,-103,-297,-394,-491,-588,-729}
+    self.selectShowItem     = nil
+    self.selectRange        = Vector2(-200,-103)
     --当前选择的技能
     self.selectItem         = nil
 
@@ -17,13 +19,55 @@ end
 function SkillRewardScrollComponent:InitValues()
     self.super.InitValues(self)
     self.scrollComponent.obliqueUpdateEvent = function(rt,speed) self:ObliqueUpdateEvent(rt,speed)  end
+    self.selectItem                         = self.allItems[2]
+    self:SetSelectSkill(self.selectItem )
+end
+
+function SkillRewardScrollComponent:UpdateObliquePosition()
+
+    local updateSelect  = false
+    local selectItemY   = self.selectItem.anchoredPosition.y
+    if selectItemY > self.selectRange.y or selectItemY < self.selectRange.y then
+        updateSelect = true
+        self.selectItem.gameObject:SetActive(true)
+        self.selectItem = nil
+    end
+
+    if updateSelect == true then
+        for i=1,self.itemCounts do
+            local y     = self.allItems[i].anchoredPosition.y
+            local realX = (y - self.obliqueOriPosY) * self.obliqueOffsetX + self.obliqueOriPosX
+            self.allItems[i].anchoredPosition = Vector2(realX,y)
+            self:SelectSkill(self.allItems[i],y)
+        end
+        updateSelect = false
+    else
+        for i=1,self.itemCounts do
+            local y     = self.allItems[i].anchoredPosition.y
+            local realX = (y - self.obliqueOriPosY) * self.obliqueOffsetX + self.obliqueOriPosX
+            self.allItems[i].anchoredPosition = Vector2(realX,y)
+        end
+    end
 end
 
 function SkillRewardScrollComponent:ObliqueUpdateEvent(rt,speed)
-    local targetPos = rt.anchoredPosition.y + speed.y
-    local moveTo = rt.anchoredPosition + Vector2(0,speed.y)
-    local realX = (moveTo.y - self.obliqueOriPosY) * self.obliqueOffsetX + self.obliqueOriPosX 
+    local targetPos     = rt.anchoredPosition.y + speed.y
+    local moveTo        = rt.anchoredPosition + Vector2(0,speed.y)
+    local realX         = (moveTo.y - self.obliqueOriPosY) * self.obliqueOffsetX + self.obliqueOriPosX 
     rt.anchoredPosition = Vector2(realX,moveTo.y)
+end
+
+function SkillRewardScrollComponent:SetSelectSkill(item)
+    self.selectItem = item
+    self.selectItem.gameObject:SetActive(false)   
+    local dataIndex = self.allItems[tonumber(item.name)]:GetComponent(typeof(CS.LuaBehaviour)).LuaTable.dataIndex
+    self.selectShowItem:Get("Text").text = self.itemData[dataIndex].dataIndex      
+end
+
+function SkillRewardScrollComponent:SelectSkill(item,y)
+    if y >= self.selectRange.x and y <= self.selectRange.y and self.selectItem ~= item then
+        self:SetSelectSkill(item)
+    end
 end
 
 

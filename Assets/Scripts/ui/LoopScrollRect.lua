@@ -158,13 +158,16 @@ function LoopScrollRect:ObliqueUpdate()
             local finalY          = upperItem.anchoredPosition.y - self.spaceY
             item.anchoredPosition = Vector2(self.obliqueOriPosX, finalY)
         end
+
+        self:RefreshData(false)
+
         self.curRow = self.curRow + 1 
         self.upRow  = (self.upRow + 1) % (self.row + 2)
         self.upRow  = self.upRow == 0 and 1 or self.upRow
         self.curTopItem:SetAsLastSibling()
         self.curTopItem     = self.itemInfoList[self.upRow]["Top"]
         self.curBtmIptItem  = self.itemInfoList[self.upRow]["BottomInsepect"]   
-        self:RefreshData(false)
+
     end
 
     if  self.curBtmIptItem.anchoredPosition.y < self.bottmLimit  then
@@ -179,13 +182,15 @@ function LoopScrollRect:ObliqueUpdate()
             item.anchoredPosition = Vector2(realX, finalY)
         end
 
+        self:RefreshData(true)
+
         self.curRow         = self.curRow - 1
         self.upRow          = (self.upRow - 1) % (self.row + 2)
         self.upRow          = self.upRow == 0 and self.row + 1 or self.upRow
         curBottomItem:SetAsFirstSibling()
         self.curTopItem     = self.itemInfoList[self.upRow]["Top"]
         self.curBtmIptItem  = self.itemInfoList[self.upRow]["BottomInsepect"]
-        self:RefreshData(true)
+
     end
 
     self:UpdateObliquePosition()
@@ -272,6 +277,21 @@ function LoopScrollRect:RefreshData(slideDown)
     local dataNums      = self.dataCount
     local curRow        = self.curRow
     local dataIndex     = curRow % dataNums
+    
+    local transferItem  = nil
+
+    if slideDown == true then
+        transferItem    = self.curTopItem:GetComponent(typeof(CS.LuaBehaviour)).LuaTable.dataIndex
+        dataIndex = transferItem - self.column
+        dataIndex = dataIndex % dataNums
+        dataIndex = dataIndex == 0 and dataNums - self.column or dataIndex - 1
+        --print("下滑---->"..transferItem.."---->"..dataIndex)
+    else
+        transferItem    = self.curBtmIptItem:GetComponent(typeof(CS.LuaBehaviour)).LuaTable.dataIndex
+        dataIndex = transferItem + self.column
+        dataIndex = dataIndex % dataNums
+        --print("上滑---->"..transferItem.."---->"..dataIndex)
+    end
 
     --刷新数据
     for i=1,self.column do

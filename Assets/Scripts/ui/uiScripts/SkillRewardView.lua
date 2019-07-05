@@ -81,13 +81,15 @@ function SkillRewardView:InitGrid()
     self.newSkillScroll.xOffset     = xOffset
     self.newSkillScroll.spaceY      = spaceY
     self.newSkillScroll.upperLeft   = upperLeft
+    self.newSkillScroll.selectShowItem   = self.SelectNewSkill
 
     self.mySkillScroll              = LoopScrollRect.new(6, 1, self.mySkillData)
-    self.mySkillScroll.view        = self
+    self.mySkillScroll.view         = self
     self.mySkillScroll.xOffset      = xOffset
     self.mySkillScroll.spaceY       = spaceY
     self.mySkillScroll.upperLeft    = upperLeft
-
+    self.mySkillScroll.selectShowItem    = self.SelectMySkill
+    
     utils:StartCoroutine(function()
         local f, asset = coroutine.yield(utils:WaitAndLoadAsset("Assets/GameMain/UI/UIItems/SkillPrefab.prefab"))
         if f:isResolved() then
@@ -180,16 +182,16 @@ end
 function SkillRewardView.SetSkillData(skillBehaviours,item,data)
 
     if data == nil then return end
-
     local behaviour         = skillBehaviours[tonumber(item.name)]
     local table             = behaviour.LuaTable
 
     table["itemName"]       = data.name
     table["itemId"]         = data.id
+    table["dataIndex"]      = data.dataIndex
     table["itemIntro"]      = data.itemIntro
     --table["itemIcon"]      = data.itemIcon
 
-    table.Text.text = data.name
+    table.Text.text = data.dataIndex
 end
 
 return SkillRewardView
